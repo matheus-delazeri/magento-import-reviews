@@ -14,11 +14,11 @@ Add the folder `Matheus` inside `/app/code/community/` and add the file `Matheus
 ## How to use
 After installation a new submenu named `Import Reviews` will be created at the menu `Catalog` in your admin panel. Click in it to enter the module's page. 
 
-
+![image](https://user-images.githubusercontent.com/55641441/122833680-c6c22500-d2c3-11eb-9f2b-ab991dc1933c.png)
 
 Now, you just need to upload your file and click in `Start` to begin the importation process.
 
-
+![image](https://user-images.githubusercontent.com/55641441/122833707-d17cba00-d2c3-11eb-8cee-dff761fcaadc.png)
 
 
 ## Input file pattern
