@@ -1,0 +1,32 @@
+<config>
+    <menu>
+        <catalog>
+            <children>
+                <matheus_importreviews translate="title" module="matheus_importreviews">
+                    <title>Import Reviews</title>
+                    <sort_order>6</sort_order>
+                    <action>import_reviews/index/index</action>
+                </matheus_importreviews>
+            </children>
+        </catalog>
+    </menu>
+    <acl>
+    <resources>
+        <all>
+            <title>Allow Everything</title>
+        </all>
+        <admin>
+            <children>
+                <catalog module="matheus_importreviews" translate="title">
+                    <children>
+			 <matheus_importreviews module="matheus_importreviews" translate="title">
+			    <title>Import Reviews</title>
+			    <sort_order>10</sort_order>
+		         </matheus_importreviews>
+                    </children>
+                </catalog>  
+            </children>
+        </admin>
+    </resources>
+</acl>
+</config>    
