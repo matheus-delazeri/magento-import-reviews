@@ -8,15 +8,20 @@ class Matheus_ImportReviews_StartController extends Mage_Adminhtml_Controller_Ac
                 $this->tmpDir = __DIR__.'/../temp/reviews.csv';
                 $sheetName = basename($_FILES['file_to_upload']['name']);
                 $excelFileType = strtolower(pathinfo($sheetName,PATHINFO_EXTENSION));
+		/** Material Icons */
+		echo "<link href='https://fonts.googleapis.com/icon?family=Material+Icons' rel='stylesheet'>"; 
+		$this->error_icon = "<i class='material-icons' style='font-size:22px;color:red;vertical-align: bottom;'>error_outline</i>";
+		$this->done_icon = "<i class='material-icons' style='font-size:22px;color:green;vertical-align: bottom;'>done</i>";
+		$this->loading_icon = "<i class='material-icons' style='font-size:22px;vertical-align: bottom;'>schedule</i>";
+		/** Process start */
                 if($excelFileType!='csv'){
-                        echo "<b>".date('H:i:s')." </b>Error: file format '".$excelFileType."' isn't accepted. You need to select a csv file.<br><br>";
+                        echo "<p>".$this->error_icon."<b> ".date('H:i:s')." </b>Error: file format '".$excelFileType."' isn't accepted. You need to select a csv file.</p>";
                 }
                 elseif(move_uploaded_file($_FILES["file_to_upload"]["tmp_name"], $this->tmpDir)){
-                        echo "<b>".date('H:i:s')." </b>Starting process...<br><br>";
+                        echo "<p>".$this->loading_icon."<b> ".date('H:i:s')." </b>Starting process...</p>";
                         $this->importReviews();
                 }
                 $this->deleteTmpFile();
-
 	}
 
 	private function importReviews(){
@@ -56,7 +61,6 @@ class Matheus_ImportReviews_StartController extends Mage_Adminhtml_Controller_Ac
 				$errorIndex += 1;
 			}
 		}
-		echo "<b>".date('H:i:s')."</b> Process finished. <b>".$successIndex."</b> reviews were successfully added to their products.<br><br>";
                 if($errorIndex != 0){
                         $errorString = "{";
                         foreach($errorLines as $line){
@@ -64,8 +68,9 @@ class Matheus_ImportReviews_StartController extends Mage_Adminhtml_Controller_Ac
                         }
                         $errorString = substr($errorString, 0, -1);
                         $errorString .= "}";
-                        echo "<b>".date('H:i:s')," </b>The following rows had invalid skus and were ignored: <b>".$errorString."</b>";
+                        echo "<p>".$this->error_icon."<b> ".date('H:i:s')," </b>The following rows had invalid skus and were ignored: <b>".$errorString."</b></p>";
                 }
+		echo "<p>".$this->done_icon."<b> ".date('H:i:s')."</b> Process finished. <b>".$successIndex."</b> reviews were successfully added to their products.<p>";
 	}
 
 	private function skuExists($sku){
@@ -78,8 +83,7 @@ class Matheus_ImportReviews_StartController extends Mage_Adminhtml_Controller_Ac
         }
 
 	private function deleteTmpFile(){
-                  chmod($this->tmpDir,0755); //Change the file permissions if allowed
-                  unlink($this->tmpDir); //remove the file
+                  chmod($this->tmpDir,0755); 
+                  unlink($this->tmpDir); 
         }
-
 }
