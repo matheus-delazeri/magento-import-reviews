@@ -23,10 +23,10 @@ Now, you just need to upload your file and click in `Start` to begin the importa
 
 ## Input file pattern
 The input file must be in CSV format and in the following order:
-|sku|title|review|status|customer_name|customer_id|
-| --- | --- | --- | --- | --- | --- | 
-|product-sku|title of review|the review|1|Matheus| |
-|product-2-sku|random title|review|1|John|1|
+|sku|title|review|status|customer_name|customer_id|stars|
+| --- | --- | --- | --- | --- | --- | --- |
+|product-sku|title of review|the review|1|Matheus| |5|
+|product-2-sku|random title|review|1|John|1|3|
 
 Where:
 * `sku`: product's sku
@@ -38,4 +38,5 @@ Where:
   * 3 for **Not Approved**
 * `customer_name`: self explanatory
 * `customer_id`: you can use the ID of the customer or leave it blank for administrator
+* `stars` : number of stars (rating) 1-5
 
