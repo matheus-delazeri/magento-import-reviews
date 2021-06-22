@@ -10,6 +10,7 @@ class Matheus_ImportReviews_StartController extends Mage_Adminhtml_Controller_Ac
                 $excelFileType = strtolower(pathinfo($sheetName,PATHINFO_EXTENSION));
 		/** Material Icons */
 		echo "<link href='https://fonts.googleapis.com/icon?family=Material+Icons' rel='stylesheet'>"; 
+		echo "<pre>";
 		$this->error_icon = "<i class='material-icons' style='font-size:22px;color:red;vertical-align: bottom;'>error_outline</i>";
 		$this->done_icon = "<i class='material-icons' style='font-size:22px;color:green;vertical-align: bottom;'>done</i>";
 		$this->loading_icon = "<i class='material-icons' style='font-size:22px;vertical-align: bottom;'>schedule</i>";
@@ -43,17 +44,27 @@ class Matheus_ImportReviews_StartController extends Mage_Adminhtml_Controller_Ac
 				$review = Mage::getModel('review/review');
 				$review->setEntityPkValue($productId)
 					->setTitle($worksheet->getCellByColumnAndRow(1, $i)->getValue())  
-					->setDetail($worksheet->getCellByColumnAndRow(2, $i)->getValue()) # Review
+					->setDetail($worksheet->getCellByColumnAndRow(2, $i)->getValue()) 
+					->setStatusId($worksheet->getCellByColumnAndRow(3, $i)->getValue())
+					->setNickname($worksheet->getCellByColumnAndRow(4, $i)->getValue()) 
+					->setCustomerId($worksheet->getCellByColumnAndRow(5, $i)->getValue()) 
+					->setStores(array(Mage::app()->getStore()->getId()))
+					->setStoreId(0)
 					->setEntityId(1) 
-					->setStoreId(Mage::app()->getStore()->getId())
-					->setStatusId($worksheet->getCellByColumnAndRow(3, $i)->getValue()) # 1 - Approved, 2 - Pending, 3 - Not Approved
-					->setNickname($worksheet->getCellByColumnAndRow(4, $i)->getValue()) # Customer name
-					->setCustomerId($worksheet->getCellByColumnAndRow(5, $i)->getValue()) # null is for administrator
-					->setReviewId($review->getId())
-					->setStores(array(Mage::app()->getStore()->getId()));
-
-				$review->save();
+					->save();
+					
+				$stars = $worksheet->getCellByColumnAndRow(6, $i)->getValue();
+				if($stars != null){
+					$ratings = $this->getRatings();
+					foreach ($ratings as $ratingId => $options) {
+						Mage::getModel('rating/rating')
+						    ->setRatingId($ratingId)
+						    ->setReviewId($review->getId())
+						    ->addOptionVote($options[$worksheet->getCellByColumnAndRow(6, $i)->getValue()], $productId);
+					}
+				}
 				$review->aggregate();
+				$review->save();
 				$successIndex += 1;
 			}
 			else{
@@ -82,6 +93,15 @@ class Matheus_ImportReviews_StartController extends Mage_Adminhtml_Controller_Ac
                 return $ver;
         }
 
+	private function getRatings(){
+		$ratings = [];
+		$options = Mage::getModel('rating/rating_option')->getCollection();
+		foreach ($options as $option) {
+		    $ratings[$option->getRatingId()][$option->getValue()] = $option->getOptionId();
+		}
+		return $ratings;
+        }
+	
 	private function deleteTmpFile(){
                   chmod($this->tmpDir,0755); 
                   unlink($this->tmpDir); 
